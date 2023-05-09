@@ -3,12 +3,19 @@ import axios from 'axios';
 import './App.css';
 
 function App() {
-	const [searchQuery, setSearchQuery] = useState({});
+	const [searchQuery, setSearchQuery] = useState('');
 	const [location, setLocation] = useState({});
+	const [reset, setReset] = useState(false);
 
 	const handleChange = (event) => {
 		// console.log(event.target.value);
 		setSearchQuery(event.target.value);
+	};
+
+	const handleReset = () => {
+		setSearchQuery('');
+		setLocation({});
+		setReset(false);
 	};
 
 	const getLocation = async () => {
@@ -20,6 +27,7 @@ function App() {
 			);
 			// console.log(data.data[0]);
 			setLocation(data.data[0]);
+			setReset(true);
 		} catch (error) {
 			console.log(error);
 		}
@@ -28,19 +36,30 @@ function App() {
 	return (
 		<div className="App">
 			<h1>City Explorer</h1>
-			<input onChange={handleChange} placeholder="Place name" />
-			<button onClick={getLocation}>Explore</button>
+			<input
+				value={searchQuery}
+				onChange={handleChange}
+				placeholder="Place name"
+			/>
+
+			{reset ? (
+				<button onClick={handleReset}>Reset</button>
+			) : (
+				<button onClick={getLocation}>Explore</button>
+			)}
 			<h2>{location.display_name}</h2>
-			<div className="data-container">
-				<p>
-					<span>lat: </span>
-					{location.lat}
-				</p>
-				<p>
-					<span>lon: </span>
-					{location.lon}
-				</p>
-			</div>
+			{location.lat && (
+				<div className="data-container">
+					<p>
+						<span>lat: </span>
+						{location.lat}
+					</p>
+					<p>
+						<span>lon: </span>
+						{location.lon}
+					</p>
+				</div>
+			)}
 		</div>
 	);
 }
