@@ -8,6 +8,7 @@ function App() {
 	const [location, setLocation] = useState({});
 	const [locationMap, setLocationMap] = useState('');
 	const [reset, setReset] = useState(false);
+	const [errorMsg, setErrorMsg] = useState('');
 
 	const handleChange = (event) => {
 		// console.log(event.target.value);
@@ -18,6 +19,7 @@ function App() {
 		setSearchQuery('');
 		setLocation({});
 		setLocationMap('');
+		setErrorMsg('');
 		setReset(false);
 	};
 
@@ -30,9 +32,11 @@ function App() {
 			// console.log(data.data[0]);
 			setLocation(data.data[0]);
 			getMap(data);
+			setErrorMsg('');
 			setReset(true);
 		} catch (error) {
 			console.error(error.message);
+			setErrorMsg('City not found: ' + error.message);
 			setReset(true);
 		}
 	};
@@ -80,6 +84,7 @@ function App() {
 					</p>
 				</div>
 			)}
+			<p style={{ color: 'red' }}>{errorMsg}</p>
 			{locationMap && <img src={locationMap} alt="map" />}
 		</div>
 	);
